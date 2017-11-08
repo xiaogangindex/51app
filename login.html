@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!--
+			在写移动端页面时，需要在<head></head>中加一句
+			<meta name="viewport" content=".....">
+			viewport:视口（屏幕的窗口）
+			width=device-width 宽度=设备的宽度（根据不用的设备来解析网页的尺寸）
+			initial-scale=1        初始缩放为一倍
+			minimum-scale=1       最小的缩放比例为一倍
+			maximum-scale=1      最大的缩放比例为一倍
+			user-scalable=no  是否允许用户缩放大小=不允许缩放大小
+		-->
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="css/style.css"/>
+	</head>
+	<body>
+		<div id="login">
+		<div class="appBar">
+			<div class="leftBtn" @click="back"></div>
+			<div class="rightBtn"></div>
+			<h2>用户登录</h2>
+		</div>
+		
+		<div class="main">
+			<div class="login_main">
+				<label for="user">
+					<span>用户名：</span>
+					<input type="text" id="user" v-model="obj.name" placeholder="请输入..." />
+				</label>
+				<label for="pwd">
+					<span>密码：</span>
+					<input type="password" id="pwd" v-model="obj.pwd" placeholder="请输入..." />
+				</label>
+				<label for="ify">
+					<span>图片验证码：</span>
+					<input type="text" id="ify" placeholder="请输入..." />
+				</label>
+				<label for="ifyCode">
+					<div id="ifyCode"></div>
+				</label>
+				<label>
+					<a href="javascript:;" class="regBtn">用有账号，点击注册</a>
+				</label>
+				
+
+				<button class="subBtn" @click="userLogin">确认登录</button>
+
+			</div>
+		</div>
+		</div>
+	</body>
+	<script src="js/yzm-wancheng.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/vue-resource.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		var p1 = new verification("ifyCode");
+		
+		var login = new Vue({
+			el:"#login",
+			data:{
+				obj:{name:"",pwd:""}
+			},
+			methods:{
+				userLogin:function(){
+					this.$http.post("http://api.51zuimei.cn/api/User",this.obj).then(function(res){
+						console.log(res)
+						if(res.body.code == 0){
+							localStorage.setItem("userName",res.body.userName)
+							window.location = "index.html";
+						}
+						else{
+							alert("用户名密码错误");
+						}
+					});
+				},
+				back:function(){
+					history.back();
+				}
+			}
+		})
+	</script>
+</html>

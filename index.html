@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" type="text/css" href="css/style.css"/>
+   <title></title>
+   <style>
+   		[v-cloak] { display: none;}
+   </style>
+</head>
+<body>
+	<div id="home">
+	<div class="appBar">
+		<div class="city">
+			<h3 @click="cityShow">城市</h3>
+			<ul v-show="isshow" v-cloak>
+				<li v-for="item in cityList" @click="changeBanner(item.areaId)">{{item.areaName}}</li>
+			</ul>
+		</div>
+		<div class="search">
+			<input type="text" id="searchInput" placeholder="发现美好，搜一下咯~"  />
+		</div>
+		<div class="rightBtn">
+			<div>
+				<p>{{user}}</p>
+				<p><a href="javascript:;" @click="logOut">退出</a></p>
+			</div>
+		</div>
+	</div>
+	<div class="banner">
+		<img v-for="item in bannerList" :src="item.imgUrl" />
+	</div>
+	<div class="indexNav">
+		<a href="list.html">美容项目</a>
+		<a href="javascript:;">美容项目</a>
+		<a href="javascript:;">美容项目</a>
+		<a href="javascript:;">美容项目</a>
+		<a href="javascript:;">美容项目</a>
+		<a href="javascript:;">美容项目</a>
+		<a href="javascript:;">美容项目</a>
+		<a href="javascript:;">美容项目</a>
+	</div>
+	
+	<div class="choice">
+		<h2>美容精选</h2>
+		<div class="choice_title">
+			<a href="javascript:;">面部</a>
+			<a href="javascript:;">面部</a>
+			<a href="javascript:;">面部</a>
+			<a href="javascript:;">面部</a>
+			<a href="javascript:;">面部</a>
+			<a href="javascript:;">面部</a>
+		</div>
+		<div class="choice_content">
+			<div class="choice_left">
+				<img src="img/indexad-mr-01.png"/>
+			</div>
+			<div class="choice_right">
+				<img src="img/indexad-mr-02.png"/>
+				<img src="img/indexad-mr-03.png"/>
+			</div>
+		</div>
+	</div>
+
+	<div class="watch">
+		<h2>大家在观注</h2>
+		<div class="watch_content" v-for="item in goodsList" v-if="showList(item.hot)">
+			<div class="watch_left">
+				<img :src="item.imgUrl" alt="" />
+			</div>
+			<div class="watch_right">
+				<h3>{{item.title}}</h3>
+				<span>{{item.info}}</span>
+				<p>已售<b>{{item.count}}</b>件/<b>{{item.person}}</b>人预购</p>
+				<p><em>{{item.price}}</em><s>{{item.oddPrice}}</s></p>
+				<button v-if="item.sale">特惠</button>
+				<button v-if="item.picc">保险</button>
+				<input type="button" value="预约" />
+			</div>
+		</div>
+	</div>
+
+	<div class="footer">
+		<a href="javascript:;">首页</a>
+		<a href="javascript:;">发现</a>
+		<a href="javascript:;"></a>
+		<a href="javascript:;">订单</a>
+		<a href="javascript:;">我的</a>
+	</div>
+	</div>
+</body>
+	<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/vue-resource.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		var home = new Vue({
+			el:"#home",
+			data:{
+				user:"",
+				isshow:false,
+				cityList:[],
+				bannerList:[],
+				goodsList:[]
+			},
+			created:function(){
+				this.getUser();
+				this.getCity();
+				this.getBanner(320500);
+				this.getGoodsList();
+			},
+			methods:{
+				getUser:function(){
+					var res = localStorage.getItem("userName");
+					if(res){
+						this.user = res;
+					}else{
+						window.location = "login.html";
+					}
+				},
+				logOut:function(){
+					localStorage.removeItem("userName");
+					window.location = "login.html";
+				},
+				cityShow:function(){
+					this.isshow = !this.isshow;
+				},
+				getCity:function(){
+					this.$http.get("http://api.51zuimei.cn/api/Area?type=valid").then(function(res){
+						console.log(res.body.list);
+						this.cityList = res.body.list;
+					})
+				},
+				getBanner:function(id){
+					this.$http.get("http://api.51zuimei.cn/api/Ads?area="+id+"&typeid=1").then(function(res){
+						console.log(res);
+						this.bannerList = res.body.list;
+					})
+				},
+				changeBanner:function(id){
+					this.getBanner(id);
+					this.isshow = false;
+				},
+				getGoodsList:function(){
+					this.$http.get("./json/goodsList.json").then(function(res){
+						console.log(res);
+						this.goodsList = res.body.list;
+					})
+				},
+				showList:function(value){
+					return value=="推荐"?true:false;
+				}
+			}
+		})
+	</script>
+</html>

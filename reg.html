@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="css/style.css"/>
+	</head>
+	<body>
+		<div id="reg">
+		<div class="appBar">
+			<div class="leftBtn" @click="back"></div>
+			<div class="rightBtn"></div>
+			<h2>用户注册</h2>
+		</div>
+		
+		<div class="main">
+			<div class="login_main">
+				<label for="user">
+					<span>用户名：</span>
+					<input type="text" id="user" placeholder="请输入..." v-model="obj.name" />
+				</label>
+				<label for="pwd">
+					<span>密码：</span>
+					<input type="password" id="pwd" placeholder="请输入..." v-model="obj.pwd" />
+				</label>
+				<label for="pwd2">
+					<span>重复密码：</span>
+					<input type="password" id="pwd2" placeholder="请输入..." />
+				</label>
+				<label for="phone">
+					<span>电话：</span>
+					<input type="tel" id="phone" placeholder="请输入..." v-model="obj.tel" />
+				</label>
+				<label >
+					<button class="phoneBtn">请点击发送验证码</button>
+				</label>
+				<label for="phoneify">
+					<span>手机验证码：</span>
+					<input type="text" id="phoneify" placeholder="请输入..." v-model="obj.smscode" />
+				</label>
+				<label for="ify">
+					<span>图片验证码：</span>
+					<input type="text" id="ify" placeholder="请输入..." />
+				</label>
+				<label for="ifyCode">
+					<div id="ifyCode"></div>
+				</label>
+
+				
+
+				<button class="subBtn" @click="addUser">提交注册</button>
+				
+			</div>
+		</div>
+		
+		</div>
+	</body>
+	<script src="js/yzm-wancheng.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/vue-resource.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		var ify = new verification("ifyCode");
+		
+		var reg = new Vue({
+			el:"#reg",
+			data:{
+				obj:{name:"",pwd:"",tel:"",smscode:""}
+			},
+			methods:{
+				addUser:function(){
+					this.$http.post("http://api.51zuimei.cn/api/UserRegister",this.obj).then(function(res){
+						console.log(res);
+						if(res.body.code == 0){
+							window.location = "login.html";
+						}
+					})
+				},
+				back:function(){
+					history.back();
+				}
+			}
+		});
+		
+		//name:注册用户名,pwd:密码,tel:电话号码,smscode:手机验证码
+		
+		
+	</script>
+</html>

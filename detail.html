@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!--
+			在写移动端页面时，需要在<head></head>中加一句
+			<meta name="viewport" content=".....">
+			viewport:视口（屏幕的窗口）
+			width=device-width 宽度=设备的宽度（根据不用的设备来解析网页的尺寸）
+			initial-scale=1        初始缩放为一倍
+			minimum-scale=1       最小的缩放比例为一倍
+			maximum-scale=1      最大的缩放比例为一倍
+			user-scalable=no  是否允许用户缩放大小=不允许缩放大小
+		-->
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="css/style.css"/>
+	</head>
+	<body>
+		<div id="detail">
+		<div class="appBar">
+			<div class="leftBtn" @click="back"></div>
+			<div class="rightBtn"></div>
+			<h2>项目详情</h2>
+		</div>
+		
+		<div class="banner">
+			<img src="img/slider-index.png" alt="" />
+		</div>
+		
+		<div class="detail_title">
+			<h2>{{obj.title}}</h2>
+			<button v-if="obj.sale">特惠</button>
+			<button v-if=obj.picc>保险</button>
+			<span>{{obj.address}}</span>
+		</div>
+		
+		<div class="detail_price">
+			<em>{{obj.price }}</em>
+			<s>{{obj.oldPrice }}</s>
+			<span>{{((obj.price/obj.oldPrice)*10).toFixed(1)}}折</span>
+			<b>已预约：{{obj.person}}</b>
+		</div>
+		
+		<div class="sale">
+			<span>红包可抵扣：{{obj.redpack }}</span>
+			<span>积分可抵扣：{{obj.jifen }}</span>
+		</div>
+		
+		<div class="detail_content">
+			<div class="detail_content_img">
+				<img :src="obj.shopImg"/>
+				<span>已认证</span>
+			</div>
+			<div class="detail_content_info">
+				<h3>{{obj.shopTitle}}</h3>
+				<p>资质：{{obj.shopInfo}}</p>
+				<p>地址：{{obj.shopAddress}}</p>
+				<button>电话咨询</button>
+				<button>加入收藏</button>
+			</div>
+		</div>
+		
+		<div class="footer">
+			<div class="f_left">
+				<p>预约金：<em>{{obj.orderPrice}}</em></p>
+				<span>到店付尾款：<b>{{obj.price-obj.orderPrice}}</b></span>
+			</div>
+			<button>立即预约</button>
+			<button>收藏</button>
+		</div>
+		</div>
+	</body>
+	<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/vue-resource.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		
+		Vue.filter("price",function(value){
+			return "￥"+value.toFixed(2)
+		})
+		
+		var detail = new Vue({
+			el:"#detail",
+			data:{
+				obj:{}
+			},
+			created:function(){
+				this.getDetail();
+			},
+			methods:{
+				getDetail:function(){
+					this.$http.get("./json/detail.json").then(function(res){
+						console.log(res)
+						var id = localStorage.getItem("id");
+						this.obj = res.body.list.find(function(item){
+							return item.id == id;
+						})
+					})
+				},
+				back:function(){
+					history.back();
+				}
+			}
+		})
+	</script>
+</html>

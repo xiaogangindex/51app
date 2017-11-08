@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="css/style.css"/>
+	</head>
+	<body>
+		<div id="list">
+		<div class="appBar">
+			<div class="leftBtn" @click="back"></div>
+			<div class="rightBtn listRightBtn"></div>
+			<h2>项目列表</h2>
+		</div>
+		
+		<div class="list_search">
+			<div>
+				<h3>地区</h3>
+				<ul>
+					<li>河南省</li>
+					<li>河北省</li>
+					<li>湖北省</li>
+				</ul>
+			</div>
+			<div>
+				<h3>功效</h3>
+				<ul>
+					<li>河南省</li>
+					<li>河北省</li>
+					<li>湖北省</li>
+				</ul>
+			</div>
+			<div>
+				<h3>销量</h3>
+				<ul>
+					<li>河南省</li>
+					<li>河北省</li>
+					<li>湖北省</li>
+				</ul>
+			</div>
+			<div>
+				<h3>价格</h3>
+				<div style="width: 100px;">
+					<input type="number" style="width: 20px;" v-model.lazy="num" />
+					-
+					<input type="number" style="width: 20px;" v-model.lazy="num2" />
+				</div>
+			</div>
+		</div>
+		
+			<div class="watch_content" v-for="item in changePrice" @click="changePage(item.id)">
+				<div class="watch_left">
+					<img :src="item.imgUrl" alt="" />
+				</div>
+				<div class="watch_right">
+					<h3>{{item.title}}</h3>
+					<span>{{item.info}}</span>
+					<p>已售<b>{{item.count}}</b>件/<b>{{item.person}}</b>人预购</p>
+					<p><em>{{item.price}}</em><s>{{item.oddPrice}}</s></p>
+					<button v-if="item.sale">特惠</button>
+					<button v-if="item.picc">保险</button>
+					<input type="button" value="预约" />
+				</div>
+			</div>
+
+		</div>
+	</body>
+	<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/vue-resource.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		var list = new Vue({
+			el:"#list",
+			data:{
+				list:[],
+				num:0,
+				num2:null
+			},
+			created:function(){
+				this.getList();
+			},
+			methods:{
+				getList:function(){
+					this.$http.get("./json/goodsList.json").then(function(res){
+						console.log(res.body.list);
+						this.list = res.body.list;
+					})
+				},
+				changePage:function(id){
+					localStorage.setItem("id",id);
+					location = "detail.html";
+				},
+				back:function(){
+					history.back();
+				}
+			},
+			//computed选项， 当computed下面的方法内使用的data选项中的属性发生改变时
+			//computed下面的方法会重新自动执行
+			computed:{
+				changePrice:function(){
+					var that = this;
+					return this.list.filter(function(item){
+						if(that.num2 == null){
+							return item.price > that.num;
+						}else{
+							return item.price > that.num && item.price <= that.num2;
+						}
+						
+					});
+				}
+			}
+			
+		})
+	</script>
+</html>
