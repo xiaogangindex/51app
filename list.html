@@ -81,7 +81,7 @@
 			},
 			methods:{
 				getList:function(){
-					this.$http.get("./json/goodsList.json").then(function(res){
+					this.$http.get("https://xiaogangindex.github.io/51app/json/goodsList.json").then(function(res){
 						console.log(res.body.list);
 						this.list = res.body.list;
 					})

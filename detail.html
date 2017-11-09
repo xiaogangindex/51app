@@ -89,11 +89,12 @@
 			},
 			methods:{
 				getDetail:function(){
-					this.$http.get("./json/detail.json").then(function(res){
-						console.log(res)
+					this.$http.get("https://xiaogangindex.github.io/51app/json/goodsList.json").then(function(res){
+							alert(res.body.list2[0].title)
+						console.log(res.body.list2)
 						var id = localStorage.getItem("id");
-						this.obj = res.body.list.find(function(item){
-							return item.id == id;
+						this.obj = res.body.list2.find(function(item){
+							return item.id == 1;
 						})
 					})
 				},
